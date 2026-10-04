@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EduLens Academic Performance Analytics{% endblock %}</title>
+    <meta name="description" content="Intelligent academic performance analytics platform.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('views.overview') }}" class="brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                EduLens
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('views.overview') }}" class="nav-link">Overview</a>
+                <a href="{{ url_for('views.predict') }}" class="nav-link">Predict</a>
+                <a href="{{ url_for('views.insights') }}" class="nav-link">Insights</a>
+                <a href="{{ url_for('views.model_info') }}" class="nav-link">Model</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{{ url_for('views.predict') }}" class="btn btn-primary">Run Prediction</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-8 mb-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="container text-center mb-8" style="color: var(--muted); font-size: 0.875rem;">
+        <p>&copy; 2026 EduLens Academic Performance Analytics. MIT Licensed.</p>
+        <p class="mt-2">For educational and research purposes only. Predictions are statistical estimates, not official academic outcomes.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

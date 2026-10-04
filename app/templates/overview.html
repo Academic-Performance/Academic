@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Overview - EduLens Academic Performance Analytics{% endblock %}
+{% block content %}
+<div class="text-center" style="padding: 64px 0;">
+    <h1 style="font-size: 3rem; margin-bottom: 24px;">Academic Performance Analytics</h1>
+    <p style="font-size: 1.25rem; color: var(--muted); max-width: 600px; margin: 0 auto 32px;">
+        An intelligent platform that uses machine learning to estimate mathematics performance from academic and contextual factors.
+    </p>
+    <div style="display: flex; gap: 16px; justify-content: center;">
+        <a href="{{ url_for('views.predict') }}" class="btn btn-primary" style="font-size: 1.125rem; padding: 12px 32px;">Start Prediction</a>
+        <a href="{{ url_for('views.model_info') }}" class="btn btn-secondary" style="font-size: 1.125rem; padding: 12px 32px;">Explore Model</a>
+    </div>
+</div>
+
+<div class="grid grid-cols-3 mt-8">
+    <div class="card text-center">
+        <h3 class="mb-4">Data-Driven</h3>
+        <p style="color: var(--muted);">Built on rigorous statistical modelling and comprehensive dataset analysis to provide robust estimates.</p>
+    </div>
+    <div class="card text-center">
+        <h3 class="mb-4">Educational Context</h3>
+        <p style="color: var(--muted);">Accounts for multiple dimensions of student experience, from preparation courses to parental education.</p>
+    </div>
+    <div class="card text-center">
+        <h3 class="mb-4">Transparent</h3>
+        <p style="color: var(--muted);">Clear metrics, open methodology, and honest limitations for responsible academic AI use.</p>
+    </div>
+</div>
+{% endblock %}

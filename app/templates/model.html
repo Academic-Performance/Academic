@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}Model Information - EduLens Academic Performance Analytics{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 class="mb-4">Model Information</h2>
+    <p class="mb-8" style="color: var(--muted);">Technical details regarding the machine learning architecture and training metrics underlying EduLens Academic Performance Analytics.</p>
+
+    <div class="grid grid-cols-2 mb-8">
+        <div style="background: var(--surface-elevated); padding: 16px; border-radius: 8px;">
+            <div style="font-size: 0.875rem; color: var(--muted); margin-bottom: 4px;">Primary Model</div>
+            <div style="font-size: 1.25rem; font-weight: 600;">{% if metadata %}{{ metadata.model_name }}{% else %}CatBoost Regressor{% endif %}</div>
+        </div>
+        <div style="background: var(--surface-elevated); padding: 16px; border-radius: 8px;">
+            <div style="font-size: 0.875rem; color: var(--muted); margin-bottom: 4px;">Target Variable</div>
+            <div style="font-size: 1.25rem; font-weight: 600;">Mathematics Score</div>
+        </div>
+    </div>
+
+    <h3 class="mb-4">Evaluation Metrics</h3>
+    <table style="width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 32px;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--border);">
+                <th style="padding: 12px 8px;">Metric</th>
+                <th style="padding: 12px 8px;">Value</th>
+                <th style="padding: 12px 8px;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 8px; font-weight: 500;">R² (Explained Variance)</td>
+                <td style="padding: 12px 8px;">{% if metadata %}{{ "%.4f"|format(metadata.metrics.r2_score) }}{% else %}N/A{% endif %}</td>
+                <td style="padding: 12px 8px; color: var(--muted); font-size: 0.875rem;">Proportion of variance in the dependent variable predictable from the independent variables.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 8px; font-weight: 500;">MAE</td>
+                <td style="padding: 12px 8px;">{% if metadata %}{{ "%.4f"|format(metadata.metrics.mae) }}{% else %}N/A{% endif %}</td>
+                <td style="padding: 12px 8px; color: var(--muted); font-size: 0.875rem;">Mean Absolute Error: average absolute difference between prediction and actual value.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 8px; font-weight: 500;">RMSE</td>
+                <td style="padding: 12px 8px;">{% if metadata %}{{ "%.4f"|format(metadata.metrics.rmse) }}{% else %}N/A{% endif %}</td>
+                <td style="padding: 12px 8px; color: var(--muted); font-size: 0.875rem;">Root Mean Squared Error: standard deviation of the prediction errors.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="mb-4">Methodology & Limitations</h3>
+    <ul style="list-style-position: inside; color: var(--muted); display: flex; flex-direction: column; gap: 8px;">
+        <li><strong>Dataset constraints:</strong> Trained on a synthetic/historical dataset representing 1,000 U.S. high school students.</li>
+        <li><strong>Generalization risk:</strong> The model may not generalize to students outside the specific demographic and geographic distribution of the training set.</li>
+        <li><strong>No causality:</strong> Feature correlation does not imply causality (e.g., test preparation courses are highly correlated with success, but other unmeasured factors like motivation may confound this).</li>
+    </ul>
+</div>
+{% endblock %}

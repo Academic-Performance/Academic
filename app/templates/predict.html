@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+{% block title %}Predict - EduLens Academic Performance Analytics{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 class="mb-2">Estimate Mathematics Score</h2>
+    <p class="mb-8" style="color: var(--muted);">Enter the student's contextual and academic factors to generate a statistical performance estimate.</p>
+    
+    <div id="alert-container"></div>
+
+    <form id="prediction-form" class="grid grid-cols-2">
+        <!-- Contextual Factors -->
+        <div style="grid-column: 1 / -1;">
+            <h3 class="mb-4" style="border-bottom: 1px solid var(--border); padding-bottom: 8px;">Contextual Factors</h3>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="gender">Gender</label>
+            <select class="form-control" id="gender" name="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="race_ethnicity">Race/Ethnicity Group</label>
+            <span class="form-help">Anonymized categorical grouping</span>
+            <select class="form-control" id="race_ethnicity" name="race_ethnicity" required>
+                <option value="" disabled selected>Select group</option>
+                <option value="group A">Group A</option>
+                <option value="group B">Group B</option>
+                <option value="group C">Group C</option>
+                <option value="group D">Group D</option>
+                <option value="group E">Group E</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="parental_level_of_education">Parental Education</label>
+            <select class="form-control" id="parental_level_of_education" name="parental_level_of_education" required>
+                <option value="" disabled selected>Select education level</option>
+                <option value="some high school">Some High School</option>
+                <option value="high school">High School</option>
+                <option value="some college">Some College</option>
+                <option value="associate's degree">Associate's Degree</option>
+                <option value="bachelor's degree">Bachelor's Degree</option>
+                <option value="master's degree">Master's Degree</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="lunch">Lunch Program</label>
+            <select class="form-control" id="lunch" name="lunch" required>
+                <option value="" disabled selected>Select program</option>
+                <option value="standard">Standard</option>
+                <option value="free/reduced">Free/Reduced</option>
+            </select>
+        </div>
+
+        <!-- Academic Factors -->
+        <div style="grid-column: 1 / -1; margin-top: 16px;">
+            <h3 class="mb-4" style="border-bottom: 1px solid var(--border); padding-bottom: 8px;">Academic Factors</h3>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="test_preparation_course">Test Preparation Course</label>
+            <select class="form-control" id="test_preparation_course" name="test_preparation_course" required>
+                <option value="" disabled selected>Select status</option>
+                <option value="none">None</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+        
+        <div></div> <!-- Spacer -->
+
+        <div class="form-group">
+            <label class="form-label" for="reading_score">Reading Score</label>
+            <span class="form-help">Enter a value between 0 and 100</span>
+            <input type="number" class="form-control" id="reading_score" name="reading_score" min="0" max="100" required placeholder="e.g. 75">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="writing_score">Writing Score</label>
+            <span class="form-help">Enter a value between 0 and 100</span>
+            <input type="number" class="form-control" id="writing_score" name="writing_score" min="0" max="100" required placeholder="e.g. 80">
+        </div>
+
+        <div style="grid-column: 1 / -1; margin-top: 24px;">
+            <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.125rem;" id="submit-btn">Generate Estimate</button>
+        </div>
+    </form>
+
+    <!-- Result Area -->
+    <div id="result-area" class="mt-8 text-center" style="display: none; padding: 32px; background: var(--surface-elevated); border-radius: var(--radius); border: 1px solid var(--border);">
+        <h3 class="mb-2">Estimated Mathematics Score</h3>
+        <div id="score-display" style="font-size: 4rem; font-family: var(--font-display); font-weight: 700; color: var(--primary); line-height: 1;">
+            --
+        </div>
+        <p class="mt-4" style="color: var(--muted); font-size: 0.875rem;">
+            This prediction is an estimate produced by the trained <span id="model-name"></span> model based on the supplied academic and contextual inputs. It should be interpreted as a statistical estimate, not as a guaranteed future examination result.
+        </p>
+        <button type="button" class="btn btn-secondary mt-4" id="reset-btn">Run Another Prediction</button>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById('prediction-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const alertContainer = document.getElementById('alert-container');
+    const form = document.getElementById('prediction-form');
+    const resultArea = document.getElementById('result-area');
+    
+    btn.disabled = true;
+    btn.innerHTML = 'Processing...';
+    alertContainer.innerHTML = '';
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+        const response = await fetch('/api/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            form.style.display = 'none';
+            resultArea.style.display = 'block';
+            
+            // Animate score
+            const scoreDisplay = document.getElementById('score-display');
+            const targetScore = result.prediction;
+            let current = 0;
+            const timer = setInterval(() => {
+                current += Math.max(1, (targetScore - current) / 5);
+                if (current >= targetScore) {
+                    current = targetScore;
+                    clearInterval(timer);
+                }
+                scoreDisplay.innerText = current.toFixed(1) + " / 100";
+            }, 30);
+            
+            document.getElementById('model-name').innerText = result.model;
+        } else {
+            alertContainer.innerHTML = `<div class="alert alert-danger">${result.error || 'Validation failed.'}</div>`;
+        }
+    } catch (error) {
+        alertContainer.innerHTML = `<div class="alert alert-danger">Network error occurred while fetching prediction.</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Generate Estimate';
+    }
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+    document.getElementById('prediction-form').style.display = 'grid';
+    document.getElementById('result-area').style.display = 'none';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{
+    "model_name": "Linear Regression",
+    "training_timestamp": "2026-10-01T10:00:02.886592",
+    "metrics": {
+        "r2_score": 0.8804332983749564,
+        "mae": 4.21476314247485,
+        "rmse": 5.393993869732845
+    },
+    "hyperparameters": {},
+    "random_seed": 42
+}

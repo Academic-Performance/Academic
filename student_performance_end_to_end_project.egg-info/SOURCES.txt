@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+src/__init__.py
+src/exception.py
+src/logger.py
+src/utils.py
+student_performance_end_to_end_project.egg-info/PKG-INFO
+student_performance_end_to_end_project.egg-info/SOURCES.txt
+student_performance_end_to_end_project.egg-info/dependency_links.txt
+student_performance_end_to_end_project.egg-info/requires.txt
+student_performance_end_to_end_project.egg-info/top_level.txt
