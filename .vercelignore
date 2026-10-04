@@ -1,0 +1,5 @@
+# Ignore large CSV files to save Vercel bundle size
+artifacts/*.csv
+notebooks/
+catboost_info/
+tests/
